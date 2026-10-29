@@ -1,8 +1,10 @@
 # Specter | OpenVSP & VSPAERO Wing Studies
 
-**Engineering automation based on an aircraft I physically printed and assembled.**
+**Engineering automation based on a prototype aircraft I built using 3D printing, assembled, and tested in the field.**
 
 This repository develops a parameterized OpenVSP model of the [Eclipson Model A](https://www.eclipson-airplanes.com/modela) RC aircraft wing and uses VSPAERO to study mesh sensitivity and planform changes.
+
+**GitHub:** [@pranavrajyaguru](https://github.com/pranavrajyaguru)
 
 ## Studies
 
@@ -16,6 +18,8 @@ This repository develops a parameterized OpenVSP model of the [Eclipson Model A]
 ## Repository
 
 ```text
+├── assets/
+│   └── IMG_0046(1).jpg          # Photograph of the assembled aircraft
 ├── src/
 │   └── specter/
 │       ├── wing_geometry.py     # Wing stations, area, aspect ratio, MAC
@@ -69,6 +73,8 @@ The original Eclipson aircraft design is not my work. My contributions are the b
 
 ## Images and outputs
 
-My original aircraft photographs and reconstruction figures are available separately until their actual binary files are committed to GitHub. This README intentionally avoids broken image placeholders.
+![My 3D-printed Eclipson Model A prototype viewed from above](assets/IMG_0046%281%29.jpg)
+
+This photo shows the Eclipson Model A prototype that I built using 3D printing, assembled, and tested in the field. It serves as the physical reference for the wing reconstruction and aerodynamic studies in this repository.
 
 [OpenVSP documentation](https://openvsp.org/) · [Python API](https://openvsp.org/pyapi_docs/latest/)
