@@ -1,0 +1,3 @@
+# Install separately from a compatible OpenVSP distribution:
+# openvsp Python bindings and VSPAERO executable
+matplotlib>=3.7
