@@ -3,8 +3,8 @@ import unittest
 from pathlib import Path
 from dataclasses import replace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from wing_geometry import Wing
-from studies import relative_change, converge
+from src.specter.wing_geometry import Wing
+from src.specter.studies import relative_change, converge
 
 class StudyTests(unittest.TestCase):
     def test_reference_area(self):
