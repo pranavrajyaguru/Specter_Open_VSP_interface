@@ -1,83 +1,74 @@
-# Specter : - Eclipson Model A Wing Studies
+# Specter | OpenVSP & VSPAERO Wing Studies
 
-Reproducible **OpenVSP / VSPAERO studies** of a 1 m wingspan, 3D-printed fixed-wing RC aircraft that I have personally assembled.
+**Engineering automation based on an aircraft I physically printed and assembled.**
 
-This repository focuses on **wing geometry, numerical mesh sensitivity and parametric comparisons**. It does not yet claim full-aircraft aerodynamic validation.
+This repository develops a parameterized OpenVSP model of the [Eclipson Model A](https://www.eclipson-airplanes.com/modela) RC aircraft wing and uses VSPAERO to study mesh sensitivity and planform changes.
 
-## What the code does
+## Studies
 
-| Study | Question | Method |
+| Experiment | Variable | Output |
 |---|---|---|
-| Mesh sensitivity | How much do calculated coefficients change with discretization? | Run 3 VSPAERO mesh settings on one baseline wing |
-| Geometry comparison | What changes when the wingtip chord is modified? | Compare 50, 60 and 70 mm tip-chord configurations |
+| Mesh sensitivity | Coarse / medium / fine tessellation | ΔCL, ΔCDi, ΔCM and polar plots |
+| Wingtip geometry | 50 / 60 / 70 mm tip chords | Geometry metrics and aerodynamic comparison |
 
-For each case the Python workflow builds a fresh OpenVSP wing, runs selected angle-of-attack cases, and exports numerical results and plots.
+**Physical reference:** [My build, measurements and reconstruction assumptions](docs/reference_aircraft.md)
 
-## Repository map
+## Repository
 
 ```text
-Specter_Open_VSP_interface/
-├── studies.py                 # OpenVSP/VSPAERO runs, comparisons, CSVs, plots
-├── wing_geometry.py           # Wing inputs and geometry calculations
+├── src/
+│   └── specter/
+│       ├── wing_geometry.py     # Wing stations, area, aspect ratio, MAC
+│       └── studies.py           # OpenVSP builder, VSPAERO runs, plots
 ├── tests/
-│   └── test_studies.py        # Independent unit tests
+│   └── test_studies.py          # Geometry and comparison unit tests
 ├── docs/
-│   └── reference_aircraft.md  # Physical aircraft, measurements, assumptions
+│   └── reference_aircraft.md    # Built aircraft, dimensions, limitations
+├── run_studies.py               # Command-line entrypoint
 ├── requirements.txt
-├── CHANGELOG.md
 ├── .gitignore
+├── CHANGELOG.md
 └── README.md
 ```
 
-Generated solver files and figures go into `results/` locally; this directory is excluded from Git.
+## Reproduce
 
-## Run locally
-
-Requires the **OpenVSP Python bindings** and a compatible **VSPAERO executable**. For the Windows Python 3.13 setup:
+On Windows with OpenVSP / VSPAERO installed for Python 3.13:
 
 ```powershell
 py -3.13 -m pip install -r requirements.txt
-py -3.13 studies.py --study all
+py -3.13 run_studies.py --study all
 ```
 
-Individual studies:
+Run either experiment with `--study mesh` or `--study geometry`. CSV tables, VSP3 models and plots are produced in the ignored local `results/` directory.
 
-```powershell
-py -3.13 studies.py --study mesh
-py -3.13 studies.py --study geometry
-```
-
-Unit tests (do **not** require OpenVSP):
+Run tests without OpenVSP:
 
 ```powershell
 py -3.13 -m unittest discover -s tests -v
 ```
 
-## Baseline wing
+## Baseline geometry
 
-| Quantity | Value |
+| Parameter | Value |
 |---|---:|
-| Span | 1,000 mm |
-| Half-span stations | 0, 47, 233, 418, 500 mm |
-| Section chords | 170, 170, 170, 155, 60 mm |
-| Approximate planform area | 0.156975 m² |
-| Approximate aspect ratio | 6.37 |
+| Wingspan | 1.000 m |
+| Spanwise stations (half wing) | 0 / 47 / 233 / 418 / 500 mm |
+| Station chords | 170 / 170 / 170 / 155 / 60 mm |
+| Projected wing area | 0.156975 m² |
+| Aspect ratio | ~6.37 |
 | Estimated dihedral | 3.43° |
-| Airfoil | Provisional NACA 2412 match |
-| Angles of attack | −2°, 0°, 2°, 4°, 6° |
+| Airfoil | Provisional NACA 2412 |
+| Angle-of-attack cases | −2° to +6°, step 2° |
 
-See [physical aircraft reference and limitations](docs/reference_aircraft.md).
+## Engineering limitations
 
-## Engineering status and limitations
+**This is a preliminary study—not validated aircraft-performance data.** The OpenVSP geometry approximates measurements and STL geometry of my assembled aircraft. The NACA 2412 section is a provisional match. Existing reported VSPAERO runs have not been rerun on this reorganized release; induced drag was not demonstrated mesh-converged (previously ~8.24% medium-to-fine difference at 4°).
 
-- The project uses geometry reconstructed approximately from STL parts and physical measurements; it is **not** an exact digital twin.
-- The prior Windows implementation completed VSPAERO runs, but this reorganized source release has **not been rerun end-to-end**.
-- At 4°, previously reported medium-to-fine differences were roughly 0.073% in CL, 8.24% in induced drag, and 2.33% in pitching moment. **Induced drag is not mesh-converged.**
-- Vortex-lattice analysis does not predict viscous profile drag or stall; no wind-tunnel correlation has been established.
-- Physical photographs and analysis images will be added once the actual files are in the repository. No missing-image placeholders are embedded here.
+The original Eclipson aircraft design is not my work. My contributions are the build, reconstruction, parametric model and numerical experiments.
 
-## Documentation
+## Images and outputs
 
-- [Physical aircraft and measured inputs](docs/reference_aircraft.md)
-- [Release notes](CHANGELOG.md)
-- [OpenVSP](https://openvsp.org/) · [OpenVSP Python API](https://openvsp.org/pyapi_docs/latest/)
+My original aircraft photographs and reconstruction figures are available separately until their actual binary files are committed to GitHub. This README intentionally avoids broken image placeholders.
+
+[OpenVSP documentation](https://openvsp.org/) · [Python API](https://openvsp.org/pyapi_docs/latest/)
