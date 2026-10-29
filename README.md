@@ -1,4 +1,4 @@
-# Specter — Eclipson Model A Wing Studies
+# Specter : - Eclipson Model A Wing Studies
 
 Reproducible **OpenVSP / VSPAERO studies** of a 1 m wingspan, 3D-printed fixed-wing RC aircraft that I have personally assembled.
 
