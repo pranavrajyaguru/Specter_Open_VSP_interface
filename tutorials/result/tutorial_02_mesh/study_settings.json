@@ -1,0 +1,40 @@
+{
+  "mesh_settings": {
+    "coarse": [
+      8,
+      15
+    ],
+    "medium": [
+      16,
+      25
+    ],
+    "fine": [
+      28,
+      41
+    ]
+  },
+  "tip_chords_mm": {
+    "baseline": 60,
+    "tip_50mm": 50,
+    "tip_70mm": 70
+  },
+  "alpha_deg": [
+    -2,
+    0,
+    2,
+    4,
+    6
+  ],
+  "method": "VSPAERO VLM",
+  "coefficient_names": {
+    "CL": "CLtot",
+    "CDi": "CDi",
+    "CM": "CMytot"
+  },
+  "wing": {
+    "span_m": 1.0,
+    "area_m2": 0.156975,
+    "aspect_ratio": 6.370441153049849,
+    "mac_m": 0.16093783511174817
+  }
+}
