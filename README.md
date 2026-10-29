@@ -1,106 +1,83 @@
-# Specter — Wing Aerodynamic Studies
+# Specter — Eclipson Model A Wing Studies
 
-Python automation of a parametric, wing-only aerodynamic study of the Eclipson Model A RC aircraft using OpenVSP and VSPAERO.
+Reproducible **OpenVSP / VSPAERO studies** of a 1 m wingspan, 3D-printed fixed-wing RC aircraft that I have personally assembled.
 
-The repository contains two repeatable experiments: a **mesh-resolution sensitivity study** and a **wingtip-chord geometry sweep**. Each run generates its own OpenVSP model, VSPAERO results, numerical tables, and comparison plots.
+This repository focuses on **wing geometry, numerical mesh sensitivity and parametric comparisons**. It does not yet claim full-aircraft aerodynamic validation.
 
-## Physical aircraft and reconstruction basis
+## What the code does
 
-This study uses the **Eclipson Model A**, a small 3D-printed fixed-wing RC aircraft that I have **personally printed and assembled**. The original aircraft design belongs to [Eclipson](https://www.eclipson-airplanes.com/modela); the physical build, measurements, OpenVSP reconstruction and engineering studies documented here are my work.
+| Study | Question | Method |
+|---|---|---|
+| Mesh sensitivity | How much do calculated coefficients change with discretization? | Run 3 VSPAERO mesh settings on one baseline wing |
+| Geometry comparison | What changes when the wingtip chord is modified? | Compare 50, 60 and 70 mm tip-chord configurations |
 
-The project is therefore not solely a generic CAD demonstration. Its reference geometry comes from the printable STL components and physical measurements of the built airframe:
+For each case the Python workflow builds a fresh OpenVSP wing, runs selected angle-of-attack cases, and exports numerical results and plots.
 
-| Quantity | Reference |
-| --- | --- |
-| Measured full wingspan | 1,000 mm |
-| Measured wing-centre chord | approximately 170 mm |
-| Measured wingtip rise | approximately 30 mm |
-| Reconstructed wing area | approximately 0.157 m² |
-| Provisional airfoil fit | NACA 2412 |
+## Repository map
 
-The OpenVSP geometry remains approximate, and the printed assembly has **not** yet provided experimental aerodynamic validation. Physical mass and centre-of-gravity correlation are planned, not completed.
+```text
+Specter_Open_VSP_interface/
+├── studies.py                 # OpenVSP/VSPAERO runs, comparisons, CSVs, plots
+├── wing_geometry.py           # Wing inputs and geometry calculations
+├── tests/
+│   └── test_studies.py        # Independent unit tests
+├── docs/
+│   └── reference_aircraft.md  # Physical aircraft, measurements, assumptions
+├── requirements.txt
+├── CHANGELOG.md
+├── .gitignore
+└── README.md
+```
 
-**Project photographs and analysis figures:** original image assets are being organized separately; no stock imagery is used.
+Generated solver files and figures go into `results/` locally; this directory is excluded from Git.
 
-## Physical Aircraft — Photographs
+## Run locally
 
-![My assembled Eclipson Model A](images/aircraft_assembled_outdoor.jpeg)
-
-![My aircraft viewed from above](images/aircraft_top_view.jpeg)
-
-## Geometry reconstruction — plots
-
-| Airfoil comparison | Wing STL inspection |
-|---|---|
-| ![Airfoil analysis](images/airfoil_naca_comparison.png) | ![Wing panel inspection](images/wing_stl_sections.png) |
-
-| Horizontal tail | Vertical tail |
-|---|---|
-| ![Horizontal tail planform](images/horizontal_tail_planform.png) | ![Vertical tail alignment](images/vertical_tail_alignment.png) |
-
-## Run
-
-On Windows, use the Python 3.13 interpreter where the OpenVSP bindings and VSPAERO executable are installed:
+Requires the **OpenVSP Python bindings** and a compatible **VSPAERO executable**. For the Windows Python 3.13 setup:
 
 ```powershell
+py -3.13 -m pip install -r requirements.txt
 py -3.13 studies.py --study all
 ```
 
-Run a single study:
+Individual studies:
 
 ```powershell
 py -3.13 studies.py --study mesh
 py -3.13 studies.py --study geometry
 ```
 
-Python unit tests do not require OpenVSP:
+Unit tests (do **not** require OpenVSP):
 
 ```powershell
 py -3.13 -m unittest discover -s tests -v
 ```
 
-Install matplotlib for plots, if needed: `py -3.13 -m pip install -r requirements.txt`. The OpenVSP Python bindings must come from a compatible OpenVSP installation.
+## Baseline wing
 
-## Engineering inputs
-
-| Parameter | Baseline |
-| --- | --- |
-| Full wingspan | 1.000 m |
-| Spanwise stations, half wing | 0, 47, 233, 418, 500 mm |
+| Quantity | Value |
+|---|---:|
+| Span | 1,000 mm |
+| Half-span stations | 0, 47, 233, 418, 500 mm |
 | Section chords | 170, 170, 170, 155, 60 mm |
-| Baseline planform area | 0.156975 m² |
-| Baseline aspect ratio | approximately 6.37 |
-| Section shape | provisional NACA 2412 |
-| Dihedral | 3.43° |
-| Angle-of-attack cases | −2°, 0°, 2°, 4°, 6° |
+| Approximate planform area | 0.156975 m² |
+| Approximate aspect ratio | 6.37 |
+| Estimated dihedral | 3.43° |
+| Airfoil | Provisional NACA 2412 match |
+| Angles of attack | −2°, 0°, 2°, 4°, 6° |
 
-The section profile and much of the geometry are approximate reconstructions, not manufacturer-confirmed measurements.
+See [physical aircraft reference and limitations](docs/reference_aircraft.md).
 
-## Experiments
+## Engineering status and limitations
 
-**Mesh sensitivity.** The baseline wing runs with three spanwise/chordwise tessellation settings: 8/15, 16/25, and 28/41. At 4° angle of attack, the code compares signed, absolute, and percentage changes in `CL`, `CDi`, and `CM`.
+- The project uses geometry reconstructed approximately from STL parts and physical measurements; it is **not** an exact digital twin.
+- The prior Windows implementation completed VSPAERO runs, but this reorganized source release has **not been rerun end-to-end**.
+- At 4°, previously reported medium-to-fine differences were roughly 0.073% in CL, 8.24% in induced drag, and 2.33% in pitching moment. **Induced drag is not mesh-converged.**
+- Vortex-lattice analysis does not predict viscous profile drag or stall; no wind-tunnel correlation has been established.
+- Physical photographs and analysis images will be added once the actual files are in the repository. No missing-image placeholders are embedded here.
 
-**Geometry sweep.** The wingtip chord changes to 50, 60, and 70 mm, with span and other station coordinates fixed. All variants use the medium mesh and the same angle-of-attack cases. Wing area and aspect ratio are recalculated for every variant.
+## Documentation
 
-VSPAERO result keys are mapped as `CLtot → CL`, `CDi → CDi`, and `CMytot → CM` for the installed API. The moment reference must be checked before physical interpretation.
-
-## Files
-
-- `studies.py`: VSPAERO orchestration, numerical comparison, CSV writing, plotting
-- `wing_geometry.py`: geometric parameters and reference calculations
-- `tests/test_studies.py`: independent computational tests
-- `CHANGELOG.md`: release notes
-- `results/`: generated locally; intentionally excluded from version control
-
-## Validation and limitations
-
-The previous working implementation completed OpenVSP/VSPAERO analysis on Windows using Python 3.13. This frozen source release **has not yet been rerun end-to-end** on that installation.
-
-In the earlier mesh study at 4°, medium-to-fine differences were approximately **0.073% in CL**, **8.24% in induced drag**, and **2.33% in pitching moment**. The induced drag is therefore **not demonstrated to be mesh-converged**. These are numerical sensitivity checks, not experimental validation.
-
-Vortex-lattice analysis does not resolve viscous profile drag or stall. Neither the geometry nor its coefficients have been validated against model-specific wind-tunnel measurements. Results are suitable for preliminary method demonstration only.
-
-## External documentation
-
-- [OpenVSP](https://openvsp.org/)
-- [OpenVSP Python API](https://openvsp.org/pyapi_docs/latest/)
+- [Physical aircraft and measured inputs](docs/reference_aircraft.md)
+- [Release notes](CHANGELOG.md)
+- [OpenVSP](https://openvsp.org/) · [OpenVSP Python API](https://openvsp.org/pyapi_docs/latest/)
