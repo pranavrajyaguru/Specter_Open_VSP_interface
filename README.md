@@ -4,6 +4,24 @@ Python automation of a parametric, wing-only aerodynamic study of the Eclipson M
 
 The repository contains two repeatable experiments: a **mesh-resolution sensitivity study** and a **wingtip-chord geometry sweep**. Each run generates its own OpenVSP model, VSPAERO results, numerical tables, and comparison plots.
 
+## Physical aircraft and reconstruction basis
+
+This study uses the **Eclipson Model A**, a small 3D-printed fixed-wing RC aircraft that I have **personally printed and assembled**. The original aircraft design belongs to [Eclipson](https://www.eclipson-airplanes.com/modela); the physical build, measurements, OpenVSP reconstruction and engineering studies documented here are my work.
+
+The project is therefore not solely a generic CAD demonstration. Its reference geometry comes from the printable STL components and physical measurements of the built airframe:
+
+| Quantity | Reference |
+| --- | --- |
+| Measured full wingspan | 1,000 mm |
+| Measured wing-centre chord | approximately 170 mm |
+| Measured wingtip rise | approximately 30 mm |
+| Reconstructed wing area | approximately 0.157 m² |
+| Provisional airfoil fit | NACA 2412 |
+
+The OpenVSP geometry remains approximate, and the printed assembly has **not** yet provided experimental aerodynamic validation. Physical mass and centre-of-gravity correlation are planned, not completed.
+
+**Project photographs and analysis figures:** original image assets are being organized separately; no stock imagery is used.
+
 ## Run
 
 On Windows, use the Python 3.13 interpreter where the OpenVSP bindings and VSPAERO executable are installed:
