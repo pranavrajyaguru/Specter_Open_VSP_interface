@@ -26,8 +26,12 @@ This repository develops a parameterized OpenVSP model of the [Eclipson Model A]
 │       └── studies.py           # OpenVSP builder, VSPAERO runs, plots
 ├── tests/
 │   └── test_studies.py          # Geometry and comparison unit tests
+├── tutorials/                  # Three runnable Python examples
+│   ├── 01_build_baseline.py
+│   ├── 02_mesh_sensitivity.py
+│   └── 03_wingtip_geometry.py
 ├── docs/
-│   └── reference_aircraft.md    # Built aircraft, dimensions, limitations
+│   └── reference_aircraft.md   # Built aircraft, dimensions, limitations
 ├── run_studies.py               # Command-line entrypoint
 ├── requirements.txt
 ├── .gitignore
@@ -35,21 +39,68 @@ This repository develops a parameterized OpenVSP model of the [Eclipson Model A]
 └── README.md
 ```
 
-## Reproduce
+## Run in three steps
 
-On Windows with OpenVSP / VSPAERO installed for Python 3.13:
+Once the virtual environment is set up, follow these steps each time you want to run the project:
+
+1. **Open the project terminal.** Open the `Specter_Open_VSP_interface` folder in VS Code, then choose **Terminal → New Terminal** and use PowerShell.
+
+2. **Activate the virtual environment.** Run:
+
+   ```powershell
+   Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+   .\.venv\Scripts\Activate.ps1
+   ```
+
+   Your terminal prompt should now start with `(.venv)`.
+
+3. **Run both studies.** Run:
+
+   ```powershell
+   python run_studies.py --study all
+   ```
+
+CSV tables, VSP3 models, and plots are saved in `results/`. To run only one experiment, replace `all` with `mesh` or `geometry`.
+
+## Runnable tutorials
+
+With `.venv` activated, run any of these scripts from the project folder:
+
+| Tutorial | Command |
+|---|---|
+| [1. Build the baseline wing](tutorials/01_build_baseline.py) | `python tutorials/01_build_baseline.py` |
+| [2. Run the mesh study](tutorials/02_mesh_sensitivity.py) | `python tutorials/02_mesh_sensitivity.py` |
+| [3. Run the wingtip geometry study](tutorials/03_wingtip_geometry.py) | `python tutorials/03_wingtip_geometry.py` |
+
+Each script saves its outputs in a separate `results/tutorial_*` folder. The first exports the baseline VSP3 model and geometry metrics; the other two run VSPAERO and generate CSV tables and comparison plots.
+
+## First-time setup
+
+On Windows, use Python 3.13 (64-bit) with the matching OpenVSP / VSPAERO distribution. Create the project environment and install its Python dependencies:
 
 ```powershell
-py -3.13 -m pip install -r requirements.txt
-py -3.13 run_studies.py --study all
+py -3.13 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Run either experiment with `--study mesh` or `--study geometry`. CSV tables, VSP3 models and plots are produced in the ignored local `results/` directory.
+Install the OpenVSP bindings and their bundled support packages into this same environment. Set `$vspPythonDir` to the `python` directory inside your extracted OpenVSP distribution:
+
+```powershell
+$vspPythonDir = 'C:\path\to\OpenVSP-3.49.0-win64\python'
+.\.venv\Scripts\python.exe -m pip install "$vspPythonDir\openvsp_config" "$vspPythonDir\utilities" "$vspPythonDir\degen_geom" "$vspPythonDir\openvsp"
+Copy-Item "$vspPythonDir\openvsp\openvsp\*.pyd" '.\.venv\Lib\site-packages\openvsp\'
+.\.venv\Scripts\python.exe -c "import openvsp as vsp; print(vsp.GetVSPVersion())"
+.\.venv\Scripts\python.exe run_studies.py --study all
+```
+
+The copy step includes the Windows binary modules omitted by the OpenVSP 3.49.0 package's installation manifest.
+
+In VS Code, select `.venv\Scripts\python.exe` as the Python interpreter. A virtual environment created with Python 3.14 cannot use the OpenVSP bindings compiled for Python 3.13.
 
 Run tests without OpenVSP:
 
 ```powershell
-py -3.13 -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
 ## Baseline geometry
@@ -67,7 +118,7 @@ py -3.13 -m unittest discover -s tests -v
 
 ## Engineering limitations
 
-**This is a preliminary study—not validated aircraft-performance data.** The OpenVSP geometry approximates measurements and STL geometry of my assembled aircraft. The NACA 2412 section is a provisional match. Existing reported VSPAERO runs have not been rerun on this reorganized release; induced drag was not demonstrated mesh-converged (previously ~8.24% medium-to-fine difference at 4°).
+**This is a preliminary study—not validated aircraft-performance data.** The OpenVSP geometry approximates measurements and STL geometry of my assembled aircraft. The NACA 2412 section is a provisional match. The mesh tutorial was run with OpenVSP 3.49.0 and Python 3.13; induced drag was not demonstrated mesh-converged (~8.24% medium-to-fine difference at 4°).
 
 The original Eclipson aircraft design is not my work. My contributions are the build, reconstruction, parametric model and numerical experiments.
 

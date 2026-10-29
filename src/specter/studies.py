@@ -82,13 +82,13 @@ def read_coefficients(vsp, result_id):
 def run_alpha(vsp, gid, wing, alpha):
     analysis = 'VSPAEROSweep'
     vsp.SetAnalysisInputDefaults(analysis)
-    vsp.SetIntAnalysisInput(analysis, 'AnalysisMethod', [0], 0)  # VLM
     vsp.SetIntAnalysisInput(analysis, 'RefFlag', [0], 0)
     for key, val in (('Sref', wing.area_m2), ('bref', wing.span_m),
                      ('cref', wing.mean_aerodynamic_chord_m),
                      ('AlphaStart', float(alpha)), ('BetaStart', 0.0),
                      ('MachStart', .02)):
         vsp.SetDoubleAnalysisInput(analysis, key, [val], 0)
+    # Current OpenVSP selects the VLM representation through the thin set.
     vsp.SetIntAnalysisInput(analysis, 'GeomSet', [vsp.SET_NONE], 0)
     vsp.SetIntAnalysisInput(analysis, 'ThinGeomSet', [vsp.SET_ALL], 0)
     vsp.SetIntAnalysisInput(analysis, 'AlphaNpts', [1], 0)
@@ -179,11 +179,11 @@ def plots(mesh_rows, shape_rows, folder):
         plt.close(fig)
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--study', choices=('all', 'mesh', 'geometry'), default='all')
     parser.add_argument('--out', type=Path, default=HERE / 'results')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     try:
         import openvsp as vsp
     except ImportError as exc:

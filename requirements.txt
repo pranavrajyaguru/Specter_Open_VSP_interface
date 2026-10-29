@@ -1,3 +1,12 @@
-# Install separately from a compatible OpenVSP distribution:
-# openvsp Python bindings and VSPAERO executable
+# Use Python 3.13 (64-bit) to match this project's OpenVSP distribution.
+
+# Study plots.
 matplotlib>=3.7
+
+# Numerical dependencies of OpenVSP's bundled support packages.
+numpy
+scipy
+
+# Install openvsp, openvsp_config, degen_geom, and utilities from a matching
+# OpenVSP distribution into the same environment; see README.md.
+# The native OpenVSP bindings and VSPAERO are not installed by this file.
