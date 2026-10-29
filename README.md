@@ -22,6 +22,22 @@ The OpenVSP geometry remains approximate, and the printed assembly has **not** y
 
 **Project photographs and analysis figures:** original image assets are being organized separately; no stock imagery is used.
 
+## Physical Aircraft — Photographs
+
+![My assembled Eclipson Model A](images/aircraft_assembled_outdoor.jpeg)
+
+![My aircraft viewed from above](images/aircraft_top_view.jpeg)
+
+## Geometry reconstruction — plots
+
+| Airfoil comparison | Wing STL inspection |
+|---|---|
+| ![Airfoil analysis](images/airfoil_naca_comparison.png) | ![Wing panel inspection](images/wing_stl_sections.png) |
+
+| Horizontal tail | Vertical tail |
+|---|---|
+| ![Horizontal tail planform](images/horizontal_tail_planform.png) | ![Vertical tail alignment](images/vertical_tail_alignment.png) |
+
 ## Run
 
 On Windows, use the Python 3.13 interpreter where the OpenVSP bindings and VSPAERO executable are installed:
